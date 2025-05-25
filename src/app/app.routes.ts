@@ -1,9 +1,20 @@
 import { Routes } from '@angular/router';
-import { CustomerListComponent } from './customer-list/customer-list.component';
-import { CustomerFormComponent } from './customer-form/customer-form.component';
 
 export const routes: Routes = [
-  { path: '', component: CustomerListComponent },
-  { path: 'add', component: CustomerFormComponent },
-  { path: 'edit/:id', component: CustomerFormComponent }
+  {
+    path: '',
+    loadComponent: () =>
+      import('./customer-list/customer-list.component').then(m => m.CustomerListComponent)
+  },
+  {
+    path: 'add',
+    loadComponent: () =>
+      import('./customer-form/customer-form.component').then(m => m.CustomerFormComponent)
+  },
+  {
+    path: 'edit/:id',
+    loadComponent: () =>
+      import('./customer-form/customer-form.component').then(m => m.CustomerFormComponent)
+  },
+  // เพิ่มเติมเส้นทางอื่นๆ ตามต้องการ
 ];

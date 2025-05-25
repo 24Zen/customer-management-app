@@ -1,13 +1,7 @@
-// src/app/customer-list/customer-list.component.ts
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-interface Customer {
-  id: number;
-  name: string;
-  email: string;
-}
+import { Router } from '@angular/router';
+import { CustomerService, Customer } from '../customer.service';
 
 @Component({
   selector: 'app-customer-list',
@@ -16,13 +10,16 @@ interface Customer {
   templateUrl: './customer-list.component.html',
 })
 export class CustomerListComponent {
-  customers: Customer[] = [
-    { id: 1, name: 'Alice', email: 'alice@example.com' },
-    { id: 2, name: 'Bob', email: 'bob@example.com' },
-    { id: 3, name: 'Charlie', email: 'charlie@example.com' },
-  ];
+  customers: Customer[] = [];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private customerService: CustomerService) {}
+
+  ngOnInit() {
+    this.customers = this.customerService.getCustomers();
+
+    // ถ้าต้องการให้ update แบบ reactive จริง ๆ
+    // this.customerService.customers$.subscribe(data => this.customers = data);
+  }
 
   addCustomer() {
     this.router.navigate(['/add']);

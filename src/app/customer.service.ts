@@ -1,4 +1,6 @@
+// src/app/customer.service.ts
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 export interface Customer {
   id: number;
@@ -7,32 +9,36 @@ export interface Customer {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomerService {
-  private customers: Customer[] = [
-    { id: 1, name: 'John Doe', email: 'john@example.com' }
-  ];
+  private customersSubject = new BehaviorSubject<Customer[]>([
+    { id: 1, name: 'Alice', email: 'alice@example.com' },
+    { id: 2, name: 'Bob', email: 'bob@example.com' },
+  ]);
 
-  private nextId = 2;
+  customers$ = this.customersSubject.asObservable();
 
   getCustomers(): Customer[] {
-    return this.customers;
+    return this.customersSubject.getValue();
+  }
+
+  addCustomer(customer: Customer) {
+    const current = this.customersSubject.getValue();
+    customer.id = current.length > 0 ? Math.max(...current.map(c => c.id)) + 1 : 1;
+    this.customersSubject.next([...current, customer]);
+  }
+
+  updateCustomer(updated: Customer) {
+    const current = this.customersSubject.getValue();
+    const index = current.findIndex(c => c.id === updated.id);
+    if (index > -1) {
+      current[index] = updated;
+      this.customersSubject.next([...current]);
+    }
   }
 
   getCustomerById(id: number): Customer | undefined {
-    return this.customers.find(c => c.id === id);
-  }
-
-  addCustomer(customer: Omit<Customer, 'id'>): void {
-    const newCustomer = { ...customer, id: this.nextId++ };
-    this.customers.push(newCustomer);
-  }
-
-  updateCustomer(updatedCustomer: Customer): void {
-    const index = this.customers.findIndex(c => c.id === updatedCustomer.id);
-    if (index !== -1) {
-      this.customers[index] = updatedCustomer;
-    }
+    return this.customersSubject.getValue().find(c => c.id === id);
   }
 }
