@@ -1,0 +1,16 @@
+<!-- src/app/customer-form/customer-form.component.html -->
+<h2>{{ isEditMode ? 'Edit' : 'Add' }} Customer</h2>
+
+<form (ngSubmit)="saveCustomer()">
+  <label>
+    Name:
+    <input type="text" [(ngModel)]="customer.name" name="name" required />
+  </label>
+  <br /><br />
+  <label>
+    Email:
+    <input type="email" [(ngModel)]="customer.email" name="email" required />
+  </label>
+  <br /><br />
+  <button type="submit">{{ isEditMode ? 'Update' : 'Save' }}</button>
+</form>
